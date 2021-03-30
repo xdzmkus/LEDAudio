@@ -1,6 +1,5 @@
-﻿
 #define LED_PIN 9
-#define AUDIO_IN A4
+#define AUDIO_IN A5
 
 #define LOG_OUT 1   // use the log output function
 #define FHT_N 256   // set to 256 point fht
@@ -19,9 +18,11 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 
 #include <ZigZagFromBottomRightToUpAndLeft.h>
 #include "SpectrumMatrixLedEffect.h"
+#include "Spectrum32Band.h"
 
+Spectrum32Band audio(fht_log_out, FHT_N / 2);
 ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
-SpectrumMatrixLedEffect effect(&matrix, 256, fht_log_out, FHT_N / 2);
+SpectrumMatrixLedEffect effect(&matrix, 256, &audio);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
@@ -42,8 +43,6 @@ void setup()
 
     analogReference(INTERNAL);
 
-    Serial.begin(115200);
-
     setup_LED();
 
     effect.start();
@@ -55,7 +54,6 @@ void loop()
 
     if (effect.paint())
     {
-        Serial.println(analogRead(AUDIO_IN));
         FastLED.show();
     }
 }

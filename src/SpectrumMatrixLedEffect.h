@@ -6,14 +6,15 @@
 #ifndef __SPECTRUMMATRIXLEDEFFECT_H__
 #define __SPECTRUMMATRIXLEDEFFECT_H__
 
-#include <ILedEffect.h>
-#include <ILedMatrix.h>
-
 #if defined(ARDUINO) && ARDUINO >= 100
 #include "Arduino.h"
 #else
 #include "WProgram.h"
 #endif
+
+#include <ILedEffect.h>
+#include <ILedMatrix.h>
+#include "IAudioConverter.h"
 
 class SpectrumMatrixLedEffect : public ILedEffect
 {
@@ -24,16 +25,10 @@ public:
 protected:
 
 	ILedMatrix* matrix;
-	uint8_t* spectrum;
-	const uint8_t width;
-
-private:
-	long gain = 100;
-	float k = 0.05;
-	float maxValue_f = 0.0;
+	IAudioConverter* audio;
 
 public:
-	SpectrumMatrixLedEffect(ILedMatrix* converter, uint16_t Hz, uint8_t spectrum[], uint8_t width);
+	SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, IAudioConverter* audioConverter);
 	~SpectrumMatrixLedEffect();
 	
 	void reset() override;
@@ -42,6 +37,7 @@ public:
 	operator const char* () const {	return name; }
 
 private:
+
 	SpectrumMatrixLedEffect(const SpectrumMatrixLedEffect&) = delete;
 	SpectrumMatrixLedEffect& operator=(const SpectrumMatrixLedEffect&) = delete;
 
