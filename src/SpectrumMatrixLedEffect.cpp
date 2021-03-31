@@ -10,11 +10,17 @@ const char* const SpectrumMatrixLedEffect::name = "SPECTRUM";
 SpectrumMatrixLedEffect::SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, IAudioConverter* audioConverter)
 	: ILedEffect(Hz), matrix(matrixConverter), audio(audioConverter)
 {
+//    bands = new BAND_LEVELS[matrix->getWidth()];
+
     reset();
 }
 
 SpectrumMatrixLedEffect::~SpectrumMatrixLedEffect()
 {
+//    if (bands != nullptr)
+//    {
+//        delete[] bands;
+//    }
 }
 
 void SpectrumMatrixLedEffect::reset()
@@ -33,20 +39,21 @@ bool SpectrumMatrixLedEffect::paint()
 
     audio->filter();
 
-    float maxValue = 0;
+    uint16_t maxValue = 0;
 
     for (uint8_t column = 0; column < matrix->getWidth(); column++)
     {
-        float columnLevel = audio->scale(column);
+        bands[column].level = audio->scale(column) *0.3F + static_cast<float>(bands[column].level) * 0.7F;
 
         // найти максимум из пачки тонов
-        if (columnLevel > maxValue) maxValue = columnLevel;
+        if (bands[column].level > maxValue)
+            maxValue = bands[column].level;
 
         // преобразовать значение величины спектра в диапазон 0..HEIGHT
-        columnLevel = map(columnLevel, audio->getLowGain(), audio->getHiGain(), 0, matrix->getHeight());
+        long columnLevel = map(static_cast<long>(bands[column].level), audio->getLowGain(), audio->getHiGain(), 0, matrix->getHeight());
         columnLevel = constrain(columnLevel, 0, matrix->getHeight());
 
-        for (int y = 0; y < columnLevel; y++)
+        for (uint8_t y = 0; y < columnLevel; y++)
         {
             if (y <= 0.5F * matrix->getHeight())
             {

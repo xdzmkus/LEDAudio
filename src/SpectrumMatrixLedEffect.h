@@ -27,6 +27,14 @@ protected:
 	ILedMatrix* matrix;
 	IAudioConverter* audio;
 
+private:
+
+	struct BAND_LEVELS
+	{
+		uint16_t level = 0;
+	}
+	bands[32];
+
 public:
 	SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, IAudioConverter* audioConverter);
 	~SpectrumMatrixLedEffect();
