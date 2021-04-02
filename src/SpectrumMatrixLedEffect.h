@@ -29,9 +29,15 @@ protected:
 
 private:
 
-	struct BAND_LEVELS
+	MillisTimer fallTimer;
+
+	static const unsigned long MAXIMUM_HOLD_TIME = 600;
+
+	struct BAND
 	{
 		uint16_t level = 0;
+		unsigned long maximumTime = 0;
+		uint8_t maximumPosition = 0;
 	}
 	bands[32];
 

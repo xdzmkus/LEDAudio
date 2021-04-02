@@ -26,8 +26,8 @@ protected:
 
 private:
 	
-	long low_gain = LOW_PASS; // нижний уровень звука (порог чувствительности шумов)
-	long hi_gain = HI_PASS;   // верхний уровень звука
+	long low_gain = LOW_PASS; // low volume level (reduce noise)
+	long hi_gain = HI_PASS;   // high volume level
 
 public:
 

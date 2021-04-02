@@ -38,13 +38,13 @@ void IAudioConverter::filter(bool normalize)
 {
     for (uint8_t i = 0; i < samplesNum; i++)
     {
-        // убрать шум
+        // remove noise
         if (spectrumValues[i] < low_gain) spectrumValues[i] = 0;
 
-        // усилить сигнал
+        // gain signal
         spectrumValues[i] = 1.5F * spectrumValues[i];
 
-        // уменьшаем громкость высоких частот (пропорционально частоте)
+        // reduce level of high frequencies 
         if (normalize) spectrumValues[i] = static_cast<float>(spectrumValues[i]) / (1.0F + static_cast<float>(i) / samplesNum);
     }
 }
@@ -60,13 +60,13 @@ float IAudioConverter::scale(uint8_t band)
     float toneLevel = spectrumValues[idxCurr];
 
     uint8_t delta = idxCurr - idxPrev;
-    // от предыдущей полосы до текущей
+    // from previous band to current
     for (uint8_t i = 0; i < delta; i++)
     {
         toneLevel += static_cast<float>(i) / delta * spectrumValues[idxPrev + i];
     }
     delta = idxNext - idxCurr;
-    // от текущей полосы до следующей
+    // from current to next band
     for (uint8_t i = 0; i < delta; i++)
     {
         toneLevel += static_cast<float>(i) / delta * spectrumValues[idxNext - i];
