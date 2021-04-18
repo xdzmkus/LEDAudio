@@ -23,7 +23,7 @@ public:
 
 protected:
 
-	virtual void calcBandWidth(uint8_t band, uint8_t& idxPrev, uint8_t& idxCurr, uint8_t& idxNext);
+	virtual BANDWIDTH calcBandWidth(uint8_t band);
 
 private:
 	Fix32BandConverter(const Fix32BandConverter&) = delete;

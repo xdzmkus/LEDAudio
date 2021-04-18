@@ -34,42 +34,64 @@ void IAudioConverter::setHiGain(long gain)
     hi_gain = gain;
 }
 
-void IAudioConverter::filter(bool normalize)
+void IAudioConverter::removeNoise()
 {
     for (uint8_t i = 0; i < samplesNum; i++)
     {
-        // remove noise
-        if (spectrumValues[i] < low_gain) spectrumValues[i] = 0;
+        if (spectrumValues[i] < LOW_PASS)
+            spectrumValues[i] = 0;
+    }
+}
 
-        // gain signal
-        spectrumValues[i] = 1.5F * spectrumValues[i];
+void IAudioConverter::removeNotSound()
+{
+    uint8_t soundsBands = 0;
 
+    for (uint8_t i = 0; i < samplesNum; i++)
+    {
+        if (spectrumValues[i] >= LOW_PASS)
+            ++soundsBands;
+    }
+
+    if (soundsBands < NOISE_BAND_LIMIT)
+        memset((void*)spectrumValues, 0, samplesNum);
+
+}
+
+void IAudioConverter::gain(float k)
+{
+    for (uint8_t i = 0; i < samplesNum; i++)
+    {
+        spectrumValues[i] = k * static_cast<float>(spectrumValues[i]);
+    }
+}
+
+void IAudioConverter::normalize()
+{
+    for (uint8_t i = 0; i < samplesNum; i++)
+    {
         // reduce level of high frequencies 
-        if (normalize) spectrumValues[i] = static_cast<float>(spectrumValues[i]) / (1.0F + static_cast<float>(i) / samplesNum);
+        spectrumValues[i] = static_cast<float>(spectrumValues[i]) / (1.0F + static_cast<float>(i) / samplesNum);
     }
 }
 
 float IAudioConverter::scale(uint8_t band)
 {
-    uint8_t idxPrev;
-    uint8_t idxCurr;
-    uint8_t idxNext;
+    BANDWIDTH bandWidth = calcBandWidth(band);
 
-    calcBandWidth(band, idxPrev, idxCurr, idxNext);
+    float toneLevel = spectrumValues[bandWidth.idxCurr];
 
-    float toneLevel = spectrumValues[idxCurr];
-
-    uint8_t delta = idxCurr - idxPrev;
+    uint8_t delta = bandWidth.idxCurr - bandWidth.idxPrev;
     // from previous band to current
     for (uint8_t i = 0; i < delta; i++)
     {
-        toneLevel += static_cast<float>(i) / delta * spectrumValues[idxPrev + i];
+        toneLevel += static_cast<float>(i) / delta * spectrumValues[bandWidth.idxPrev + i];
     }
-    delta = idxNext - idxCurr;
+    delta = bandWidth.idxNext - bandWidth.idxCurr;
     // from current to next band
     for (uint8_t i = 0; i < delta; i++)
     {
-        toneLevel += static_cast<float>(i) / delta * spectrumValues[idxNext - i];
+        toneLevel += static_cast<float>(i) / delta * spectrumValues[bandWidth.idxNext - i];
     }
 
     return toneLevel;

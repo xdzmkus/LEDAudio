@@ -7,8 +7,8 @@
 #########################################
 
 SpectrumMatrixLedEffect          KEYWORD1
-SpectrumFlexBand                 KEYWORD1
-Spectrum32Band                   KEYWORD1
+Fix32BandConverter               KEYWORD1
+LinearParabolicBandConverter     KEYWORD1
 
 #########################################
 # Methods and Functions (KEYWORD2)

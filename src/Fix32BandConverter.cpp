@@ -17,17 +17,22 @@ Fix32BandConverter::~Fix32BandConverter()
 
 float Fix32BandConverter::scale(uint8_t band)
 {
-    if (band > 31) // stupid guardian
-        return 0.0f;
+    // stupid guardian
+    if (band > 31)
+        return 0.0F;
 
     return IAudioConverter::scale(band);
 }
 
-void Fix32BandConverter::calcBandWidth(uint8_t band, uint8_t& idxPrev, uint8_t& idxCurr, uint8_t& idxNext)
+IAudioConverter::BANDWIDTH Fix32BandConverter::calcBandWidth(uint8_t band)
 {
-    idxPrev = pgm_read_byte(&(bands[band]));
-    idxCurr = pgm_read_byte(&(bands[band + 1]));
-    idxNext = pgm_read_byte(&(bands[band + 2]));
+    BANDWIDTH bandWidth = {};
+
+    bandWidth.idxPrev = pgm_read_byte(&(bands[band]));
+    bandWidth.idxCurr = pgm_read_byte(&(bands[band + 1]));
+    bandWidth.idxNext = pgm_read_byte(&(bands[band + 2]));
+
+    return bandWidth;
 }
 
 

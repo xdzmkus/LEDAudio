@@ -16,6 +16,14 @@ class IAudioConverter
 {
 public:
 
+	struct BANDWIDTH
+	{
+		uint8_t idxPrev;
+		uint8_t idxCurr;
+		uint8_t idxNext;
+	};
+
+	static const uint8_t NOISE_BAND_LIMIT = 5;
 	static const uint8_t LOW_PASS = 30;
 	static const uint8_t HI_PASS = 150;
 
@@ -40,12 +48,15 @@ public:
 	long getHiGain();
 	void setHiGain(long gain);
 
-	virtual void filter(bool normalize = false);
+	virtual void removeNoise();
+	virtual void removeNotSound();
+	virtual void gain(float k = 1.5F);
+	virtual void normalize();
 	virtual float scale(uint8_t band);
 
 protected:
 
-	virtual void calcBandWidth(uint8_t band, uint8_t& idxPrev, uint8_t& idxCurr, uint8_t& idxNext) = 0;
+	virtual BANDWIDTH calcBandWidth(uint8_t band) = 0;
 
 private:
 

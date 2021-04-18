@@ -39,14 +39,14 @@ private:
 		unsigned long maximumTime = 0;
 		uint8_t maximumPosition = 0;
 	}
-	bands[32];
+	*bands;
 
 public:
 	SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, IAudioConverter* audioConverter);
 	~SpectrumMatrixLedEffect();
 	
 	void reset() override;
-	bool paint() override;
+	void paint() override;
 
 	operator const char* () const {	return name; }
 
