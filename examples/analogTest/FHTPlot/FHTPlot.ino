@@ -14,11 +14,29 @@ void setup()
 {
     Serial.begin(115200);
 
+#ifdef ADCSRA
+
+    // поднимаем частоту опроса аналогового порта до 38.4 к√ц, по теореме
+    //  отельникова (Ќайквиста) максимальна€ частота дискретизации будет 19 к√ц
+    // http://yaab-arduino.blogspot.ru/2015/02/fast-sampling-from-analog-input.html
+
     sbi(ADCSRA, ADPS2);
     cbi(ADCSRA, ADPS1);
     sbi(ADCSRA, ADPS0);
 
-    analogReference(EXTERNAL);
+#endif // ADCSRA
+
+#ifdef ARDUINO_AVR_MEGA2560
+
+    analogReference(INTERNAL1V1);
+
+#else
+
+    analogReference(INTERNAL);
+
+#endif
+
+//  analogReference(EXTERNAL);
 }
 
 void loop()

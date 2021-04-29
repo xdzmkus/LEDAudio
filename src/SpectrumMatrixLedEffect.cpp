@@ -7,7 +7,7 @@
 
 const char* const SpectrumMatrixLedEffect::name = "SPECTRUM";
 
-SpectrumMatrixLedEffect::SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, IAudioConverter* audioConverter)
+SpectrumMatrixLedEffect::SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, ISpectrumBandConverter* audioConverter)
 	: ILedEffect(Hz), matrix(matrixConverter), audio(audioConverter), fallTimer(50)
 {
 	bands = new BAND[matrix->getWidth()];
@@ -42,7 +42,7 @@ void SpectrumMatrixLedEffect::paint()
 
 	for (uint8_t column = 0; column < matrix->getWidth(); column++)
 	{
-		bands[column].level = audio->scale(column) * 0.2F + static_cast<float>(bands[column].level) * 0.8F;
+		bands[column].level = audio->getBandValue(column) * 0.2F + static_cast<float>(bands[column].level) * 0.8F;
 
 		// find the maximum of all bands
 		if (bands[column].level > maxValue)

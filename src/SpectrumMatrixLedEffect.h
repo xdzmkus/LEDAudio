@@ -12,9 +12,10 @@
 #include "WProgram.h"
 #endif
 
+#include <EffectTimer.h>
 #include <ILedEffect.h>
 #include <ILedMatrix.h>
-#include "IAudioConverter.h"
+#include "ISpectrumBandConverter.h"
 
 class SpectrumMatrixLedEffect : public ILedEffect
 {
@@ -25,7 +26,7 @@ public:
 protected:
 
 	ILedMatrix* matrix;
-	IAudioConverter* audio;
+	ISpectrumBandConverter* audio;
 
 private:
 
@@ -42,7 +43,7 @@ private:
 	*bands;
 
 public:
-	SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, IAudioConverter* audioConverter);
+	SpectrumMatrixLedEffect(ILedMatrix* matrixConverter, uint16_t Hz, ISpectrumBandConverter* audioConverter);
 	~SpectrumMatrixLedEffect();
 	
 	void reset() override;
