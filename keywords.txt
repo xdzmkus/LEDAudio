@@ -6,6 +6,8 @@
 # Datatypes (KEYWORD1)
 #########################################
 
+VUMeterMatrixLedEffect           KEYWORD1
+VUWaveMatrixLedEffect            KEYWORD1
 SpectrumMatrixLedEffect          KEYWORD1
 Fix32BandConverter               KEYWORD1
 ParabolicXBandConverter	         KEYWORD1

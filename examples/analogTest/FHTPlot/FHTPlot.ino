@@ -36,7 +36,28 @@ void setup()
 
 #endif
 
-//  analogReference(EXTERNAL);
+    unsigned long nowTime = millis();
+
+    for (int i = 0; i < FHT_N; i++)
+    {
+        fht_input[i] = analogRead(MIC_PIN); // put real data into bins
+    }
+
+    unsigned long readTime = millis() - nowTime;
+
+    Serial.print(F("Analog read time: ")); Serial.print(readTime); Serial.println(F(" ms"));
+
+    nowTime = millis();
+
+    fht_window();  // window the data for better frequency response
+    fht_reorder(); // reorder the data before doing the fht
+    fht_run();     // process the data in the fht
+    fht_mag_log(); // take the output of the fht
+
+    unsigned long fftTime = millis() - nowTime;
+
+    Serial.print(F("FFT compute time: ")); Serial.print(fftTime); Serial.println(F(" ms"));
+
 }
 
 void loop()

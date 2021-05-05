@@ -40,7 +40,30 @@ void setup()
 
 #endif
 
-//  analogReference(EXTERNAL);
+    unsigned long nowTime = millis();
+
+    // Sample the audio pin
+    for (uint16_t i = 0; i < SAMPLES; i++)
+    {
+        vReal[i] = static_cast<double>(analogRead(MIC_PIN));
+        vImag[i] = 0.0;
+    }
+
+    unsigned long readTime = millis() - nowTime;
+
+    Serial.print(F("Analog read time: ")); Serial.print(readTime); Serial.println(F(" ms"));
+
+    nowTime = millis();
+
+    // Compute FFT
+    FFT.DCRemoval();
+    FFT.Windowing(FFT_WIN_TYP_HAMMING, FFT_FORWARD);
+    FFT.Compute(FFT_FORWARD);
+    FFT.ComplexToMagnitude();
+
+    unsigned long fftTime = millis() - nowTime;
+
+    Serial.print(F("FFT compute time: ")); Serial.print(fftTime); Serial.println(F(" ms"));
 }
 
 void loop()
@@ -63,13 +86,6 @@ void loop()
     {
         Serial.println(vReal[i], 0);
     }
-
-    double f = 0;
-    double v = 0;
-    FFT.MajorPeak(&f, &v);
-
-    Serial.print("peak: ");
-    Serial.println(v);
 
     delay(500); /* Repeat after delay */
 }

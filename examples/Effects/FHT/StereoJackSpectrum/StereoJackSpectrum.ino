@@ -56,7 +56,7 @@ void setup()
 
 #ifdef ARDUINO_AVR_MEGA2560
 
-    analogReference(INTERNAL1V1);
+    analogReference(INTERNAL2V56);
 
 #else
 

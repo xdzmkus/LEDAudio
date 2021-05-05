@@ -2,8 +2,6 @@
 #define LEFT_PIN A0
 #define RIGHT_PIN A1
 
-bool whichChannel = false;
-
 #define MATRIX_H 8
 #define MATRIX_W 32
 #define CURRENT_LIMIT 6000
@@ -29,6 +27,8 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 ParabolicXBandConverter<double, uint8_t>  audio(vReal + 2, SAMPLES / 2 - 2, MATRIX_W);
 ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
 SpectrumMatrixLedEffect* effect;
+
+bool whichChannel = false;
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
