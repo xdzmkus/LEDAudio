@@ -24,20 +24,33 @@ void VUMeterMatrixLedEffect::reset()
 	matrix->clearAllLeds();
 }
 
-void VUMeterMatrixLedEffect::drawLeftChannel()
+void VUMeterMatrixLedEffect::paint(uint16_t rightVU, uint16_t leftVU)
+{
+	drawLeftChannel(leftVU);
+	drawRightChannel(rightVU);
+}
+
+void VUMeterMatrixLedEffect::autoGain(uint16_t maxVU)
+{
+	if (maxLevel > NOISE_LEVEL) maxLevel -= 5;
+
+	if (maxVU > maxLevel) maxLevel = maxVU;
+}
+
+void VUMeterMatrixLedEffect::drawLeftChannel(uint16_t currentVU)
 {
 	// shift left half of matrix
 	(*matrix) << matrix->getWidth() / 2 - 1;
 
-	drawVUsignal(matrix->getWidth() / 2 - 1, getLeftColumnLevel());
+	drawVUsignal(matrix->getWidth() / 2 - 1, getColumnLevel(currentVU));
 }
 
-void VUMeterMatrixLedEffect::drawRightChannel()
+void VUMeterMatrixLedEffect::drawRightChannel(uint16_t currentVU)
 {
 	// shift right half of matrix
 	(*matrix) >> matrix->getWidth() / 2;
 
-	drawVUsignal(matrix->getWidth() / 2, getRightColumnLevel());
+	drawVUsignal(matrix->getWidth() / 2, getColumnLevel(currentVU));
 }
 
 void VUMeterMatrixLedEffect::drawVUsignal(uint8_t x, uint8_t columnLevel)
@@ -73,49 +86,10 @@ void VUMeterMatrixLedEffect::drawVUsignal(uint8_t x, uint8_t columnLevel)
 	}
 }
 
-uint8_t VUMeterMatrixLedEffect::getLeftColumnLevel()
+uint8_t VUMeterMatrixLedEffect::getColumnLevel(uint16_t currentVU)
 {
-	long columnLevel = 0;
+	// convert channel level to column height
+	long columnLevel = map(currentVU, 0, maxLevel, 0, matrix->getHeight());
 
-	// convert right channel level to column height
-	columnLevel = map(rightChannelVU, 0, maxLevel, 0, matrix->getHeight());
-	columnLevel = constrain(columnLevel, 0, matrix->getHeight());
-
-	return columnLevel;
-}
-
-uint8_t VUMeterMatrixLedEffect::getRightColumnLevel()
-{
-	long columnLevel = 0;
-
-	// convert right channel level to column height
-	columnLevel = map(rightChannelVU, 0, maxLevel, 0, matrix->getHeight());
-	columnLevel = constrain(columnLevel, 0, matrix->getHeight());
-
-	return columnLevel;
-}
-
-void VUMeterMatrixLedEffect::autoGain()
-{
-	if(maxLevel > NOISE_LEVEL)
-		maxLevel -= 5;
-	if (rightChannelVU > maxLevel)
-		maxLevel = rightChannelVU;
-	if (leftChannelVU > maxLevel)
-		maxLevel = leftChannelVU;
-}
-
-void VUMeterMatrixLedEffect::paint()
-{
-	autoGain();
-	drawLeftChannel();
-	drawRightChannel();
-}
-
-void VUMeterMatrixLedEffect::paint(uint16_t rightVU, uint16_t leftVU)
-{
-	rightChannelVU = rightVU;
-	leftChannelVU = leftVU;
-	
-	paint();
+	return constrain(columnLevel, 0, matrix->getHeight());
 }
