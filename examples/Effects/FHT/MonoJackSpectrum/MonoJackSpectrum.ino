@@ -1,5 +1,14 @@
-#define LED_PIN 9
+#if defined(ESP8266)
+#define LED_PIN D5  // leds pin
 #define MIC_PIN A0
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
+#define MIC_PIN A0
+#else
+#define LED_PIN 9   // leds pin
+#define MIC_PIN A0
+#endif
+
 
 #define LOG_OUT 1   // use the log output function
 #define FHT_N 256   // set to 256 point fht
@@ -16,14 +25,12 @@ extern uint8_t fht_log_out[FHT_N / 2];  // FHT log output magintude buffer
 #include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include <ZigZagFromBottomRightToUpAndLeft.h>
-#include "SpectrumMatrixLedEffect.h"
+#include <ZigZagFromTopLeftToBottomAndRight.hpp>
+#include "LEDAudioEffects.h"
 #include "Fix32BandConverter.hpp"
 
 Fix32BandConverter<uint8_t, uint8_t> audio(fht_log_out, (FHT_N / 2));
-
-ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
-SpectrumMatrixLedEffect effect(&matrix, 256, &audio);
+SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, &audio);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
@@ -38,8 +45,6 @@ void setup_LED()
 
 void setup()
 {
-  Serial.begin(115200);
-
 #ifdef ADCSRA
 
   // поднимаем частоту опроса аналогового порта до 38.4 к√ц, по теореме
@@ -58,7 +63,7 @@ void setup()
 
 #else
 
-  analogReference(INTERNAL);
+  analogReference(EXTERNAL);
 
 #endif
 

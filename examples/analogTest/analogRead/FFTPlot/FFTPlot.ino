@@ -30,15 +30,8 @@ void setup()
 
 #endif // ADCSRA
 
-#ifdef ARDUINO_AVR_MEGA2560
-
-    analogReference(INTERNAL1V1);
-
-#else
-
-    analogReference(INTERNAL);
-
-#endif
+//    analogReference(INTERNAL1V1);
+//    analogReference(INTERNAL);
 
     unsigned long nowTime = millis();
 

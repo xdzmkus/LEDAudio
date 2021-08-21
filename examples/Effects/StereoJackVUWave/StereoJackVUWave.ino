@@ -1,7 +1,16 @@
-#define LED_PIN 9
-
+#if defined(ESP8266)
+#define LED_PIN D5  // leds pin
+#define LEFT_PIN A0
+#define RIGHT_PIN A0
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
+#define LEFT_PIN A0
+#define RIGHT_PIN A0
+#else
+#define LED_PIN 9   // leds pin
 #define LEFT_PIN A0
 #define RIGHT_PIN A1
+#endif
 
 #define MATRIX_H 8
 #define MATRIX_W 32
@@ -11,11 +20,10 @@
 #include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include <ZigZagFromBottomRightToUpAndLeft.h>
-#include "VUWaveMatrixLedEffect.h"
+#include <ZigZagFromTopLeftToBottomAndRight.hpp>
+#include "LEDAudioEffects.h"
 
-ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
-VUWaveMatrixLedEffect effect(&matrix, 30);
+VUWaveMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(30);
 
 bool whichChannel = false;
 
@@ -32,8 +40,6 @@ void setup_LED()
 
 void setup()
 {
-    Serial.begin(115200);
-
 #ifdef ADCSRA
 
     // поднимаем частоту опроса аналогового порта до 38.4 к√ц, по теореме
@@ -52,7 +58,8 @@ void setup()
 
 #else
 
-    analogReference(INTERNAL);
+    analogReference(EXTERNAL);
+    //    analogReference(INTERNAL);
 
 #endif
 
@@ -68,6 +75,7 @@ void loop()
         uint16_t r = 0;
         uint16_t l = 0;
         analyzeAudio(r, l);
+        //      effect.autoGain(max(r, l));
         effect.paint(r, l);
         FastLED.show();
     }

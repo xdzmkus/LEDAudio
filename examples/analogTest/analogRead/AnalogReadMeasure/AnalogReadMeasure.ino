@@ -1,5 +1,5 @@
 
-#define ANALOG_IN A0
+#define ANALOG_IN 35
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))

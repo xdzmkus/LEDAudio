@@ -1,7 +1,16 @@
-#define LED_PIN 9
-
+#if defined(ESP8266)
+#define LED_PIN D5  // leds pin
+#define LEFT_PIN A0
+#define RIGHT_PIN A0
+#elif defined(ESP32)
+#define LED_PIN  16 // leds pin
+#define LEFT_PIN A0
+#define RIGHT_PIN A0
+#else
+#define LED_PIN 9   // leds pin
 #define LEFT_PIN A0
 #define RIGHT_PIN A1
+#endif
 
 #define MATRIX_H 11
 #define MATRIX_W 36
@@ -11,11 +20,10 @@
 #include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include <ZigZagFromBottomRightToUpAndLeft.h>
-#include "VUMeterMatrixLedEffect.h"
+#include <ZigZagFromTopLeftToBottomAndRight.hpp>
+#include "LEDAudioEffects.h"
 
-ZigZagFromBottomRightToUpAndLeft matrix(leds, MATRIX_W, MATRIX_H);
-VUMeterMatrixLedEffect effect(&matrix, 30, 512);
+VUMeterMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(30, 512);
 
 bool whichChannel = false;
 

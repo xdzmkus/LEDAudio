@@ -22,7 +22,7 @@ public:
 	};
 
 	static const long LOW_PASS = 30;
-	static const long HI_PASS = 150;
+	static const long HI_PASS = 512;
 
 private:
 
