@@ -27,7 +27,6 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 
 #include <ZigZagFromTopLeftToBottomAndRight.hpp>
 #include "LEDAudioEffects.h"
-#include "Fix32BandConverter.hpp"
 
 Fix32BandConverter<uint8_t, uint8_t> audio(fht_log_out, (FHT_N / 2));
 SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, &audio);

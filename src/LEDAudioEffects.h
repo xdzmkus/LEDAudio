@@ -1,5 +1,8 @@
 #pragma once
 
-#include "SpectrumMatrixLedEffect.hpp"
-#include "VUMeterMatrixLedEffect.hpp"
-#include "VUWaveMatrixLedEffect.hpp"
+#include "converter/Fix32BandConverter.hpp"
+#include "converter/ParabolicXBandConverter.hpp"
+
+#include "effects/SpectrumMatrixLedEffect.hpp"
+#include "effects/VUMeterMatrixLedEffect.hpp"
+#include "effects/VUWaveMatrixLedEffect.hpp"
