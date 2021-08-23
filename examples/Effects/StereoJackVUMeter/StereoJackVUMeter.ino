@@ -58,8 +58,8 @@ void setup()
 
 #else
 
-    analogReference(EXTERNAL);
-//    analogReference(INTERNAL);
+//    analogReference(EXTERNAL);
+    analogReference(INTERNAL);
 
 #endif
 

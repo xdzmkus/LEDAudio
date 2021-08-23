@@ -58,8 +58,8 @@ void setup()
 
 #else
 
-    analogReference(EXTERNAL);
-    //    analogReference(INTERNAL);
+//    analogReference(EXTERNAL);
+    analogReference(INTERNAL);
 
 #endif
 
@@ -75,7 +75,7 @@ void loop()
         uint16_t r = 0;
         uint16_t l = 0;
         analyzeAudio(r, l);
-        //      effect.autoGain(max(r, l));
+//      effect.autoGain(max(r, l));
         effect.paint(r, l);
         FastLED.show();
     }

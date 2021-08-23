@@ -43,8 +43,6 @@ void setup_LED()
 
 void setup()
 {
-    Serial.begin(115200);
-
     setup_LED();
 
     effect.start();

@@ -1,18 +1,13 @@
-#if defined(ESP8266)
+п»ї#if defined(ESP8266)
 #define LED_PIN D5  // leds pin
-#define LEFT_PIN A0
-#define RIGHT_PIN A0
+#define MIC_PIN A0
 #elif defined(ESP32)
-#define LED_PIN  16 // leds pin
-#define LEFT_PIN A0
-#define RIGHT_PIN A0
+#define LED_PIN 16 // leds pin
+#define MIC_PIN 35
 #else
 #define LED_PIN 9   // leds pin
-#define LEFT_PIN A0
-#define RIGHT_PIN A1
+#define MIC_PIN A0
 #endif
-
-bool whichChannel = false;
 
 #define LOG_OUT 1   // use the log output function
 #define FHT_N 256   // set to 256 point fht
@@ -24,7 +19,7 @@ extern uint8_t fht_log_out[FHT_N / 2];  // FHT log output magintude buffer
 #define MATRIX_H 8
 #define MATRIX_W 32
 #define CURRENT_LIMIT 6000
-#define BRIGHTNESS 120
+#define BRIGHTNESS 20
 
 #include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
@@ -32,8 +27,8 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 #include <ZigZagFromTopLeftToBottomAndRight.hpp>
 #include "LEDAudioEffects.h"
 
-ParabolicXBandConverter<uint8_t, uint8_t>  audio(fht_log_out + 2, FHT_N / 2 - 2, MATRIX_W);
-SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, & audio);
+Fix32BandConverter<uint8_t, uint8_t> audio(fht_log_out, (FHT_N / 2));
+SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, &audio);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
@@ -50,8 +45,6 @@ void setup()
 {
 #ifdef ADCSRA
 
-    // поднимаем частоту опроса аналогового порта до 38.4 кГц, по теореме
-    // Котельникова (Найквиста) максимальная частота дискретизации будет 19 кГц
     // http://yaab-arduino.blogspot.ru/2015/02/fast-sampling-from-analog-input.html
 
     sbi(ADCSRA, ADPS2);
@@ -62,14 +55,14 @@ void setup()
 
 #ifdef ARDUINO_AVR_MEGA2560
 
-    analogReference(INTERNAL2V56);
+    analogReference(INTERNAL1V1);
 
 #else
 
     analogReference(EXTERNAL);
 
 #endif
-    
+
     setup_LED();
 
     effect.start();
@@ -87,23 +80,10 @@ void loop()
 
 void analyzeAudio()
 {
-    if (whichChannel)
+    for (int i = 0; i < FHT_N; i++)
     {
-        for (int i = 0; i < FHT_N; i++)
-        {
-            fht_input[i] = analogRead(LEFT_PIN); // put real data into bins
-        }
+        fht_input[i] = analogRead(MIC_PIN); // put real data into bins
     }
-    else
-    {
-        for (int i = 0; i < FHT_N; i++)
-        {
-            fht_input[i] = analogRead(RIGHT_PIN); // put real data into bins
-        }
-    }
-
-    whichChannel = !whichChannel;
-
     fht_window();  // window the data for better frequency response
     fht_reorder(); // reorder the data before doing the fht
     fht_run();     // process the data in the fht
