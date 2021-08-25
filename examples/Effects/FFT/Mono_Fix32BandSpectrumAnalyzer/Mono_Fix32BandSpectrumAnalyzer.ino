@@ -30,8 +30,10 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 #include <ZigZagFromTopLeftToBottomAndRight.hpp>
 #include "LEDAudioEffects.h"
 
+void analyzeAudio(void);
+
 Fix32BandConverter<double, uint8_t> audio(vReal + 2, SAMPLES / 2 - 2);
-SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(32, &audio);
+SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(32, &audio, analyzeAudio);
 
 void setup_LED()
 {
@@ -54,10 +56,6 @@ void loop()
 {
     if (effect.isReady())
     {
-        analyzeAudio();
-
-        audio.removeNotSound();
-
         effect.paint();
         FastLED.show();
     }
@@ -77,4 +75,6 @@ void analyzeAudio()
     FFT.Windowing(FFT_WIN_TYP_HAMMING, FFT_FORWARD);
     FFT.Compute(FFT_FORWARD);
     FFT.ComplexToMagnitude();
+
+    audio.removeNotSound();
 }

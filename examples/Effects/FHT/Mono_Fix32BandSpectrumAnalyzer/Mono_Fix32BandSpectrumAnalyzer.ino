@@ -27,8 +27,10 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 #include <ZigZagFromTopLeftToBottomAndRight.hpp>
 #include "LEDAudioEffects.h"
 
+void analyzeAudio(void);
+
 Fix32BandConverter<uint8_t, uint8_t> audio(fht_log_out, (FHT_N / 2));
-SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, &audio);
+SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, &audio, analyzeAudio);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
@@ -72,7 +74,6 @@ void loop()
 {
     if (effect.isReady())
     {
-        analyzeAudio();
         effect.paint();
         FastLED.show();
     }

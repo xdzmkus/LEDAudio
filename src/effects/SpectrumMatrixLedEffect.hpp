@@ -11,6 +11,12 @@
 #include <ILedMatrix.hpp>
 #include "converter/ISpectrumBandConverter.h"
 
+/**
+* The audio preprocess procedure.
+*
+*/
+typedef void (*SpectrumMatrixLedPreprocess)(void);
+
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 class SpectrumMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILedEffect
 {
@@ -21,6 +27,8 @@ public:
 protected:
 
 	ISpectrumBandConverter* audio;
+
+	SpectrumMatrixLedPreprocess preprocess;
 
 private:
 
@@ -38,7 +46,7 @@ private:
 
 public:
 
-	SpectrumMatrixLedEffect(uint16_t Hz, ISpectrumBandConverter* audioConverter);
+	SpectrumMatrixLedEffect(uint16_t Hz, ISpectrumBandConverter* audioConverter, SpectrumMatrixLedPreprocess pre = nullptr);
 	~SpectrumMatrixLedEffect();
 	
 	void reset() override;
@@ -57,8 +65,8 @@ template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t
 const char* const SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::name = "SPECTRUM";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::SpectrumMatrixLedEffect(uint16_t Hz, ISpectrumBandConverter* audioConverter)
-	: ILedEffect(Hz), audio(audioConverter), fallTimer(50)
+SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::SpectrumMatrixLedEffect(uint16_t Hz, ISpectrumBandConverter* audioConverter, SpectrumMatrixLedPreprocess pre)
+	: ILedEffect(Hz), audio(audioConverter), preprocess(pre), fallTimer(50)
 {
 	fallTimer.start();
 
@@ -81,6 +89,11 @@ void SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::reset()
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 void SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::paint()
 {
+	if (preprocess)
+	{
+		preprocess();
+	}
+
 	MATRIX<ledLine, width, height>::clearAllLeds();
 
 	bool fallMaximus = fallTimer.isReady();
