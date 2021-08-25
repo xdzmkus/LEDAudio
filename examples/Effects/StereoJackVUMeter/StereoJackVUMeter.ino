@@ -23,9 +23,9 @@ CRGB leds[(MATRIX_H * MATRIX_W)];
 #include <ZigZagFromTopLeftToBottomAndRight.hpp>
 #include "LEDAudioEffects.h"
 
-VUMeterMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(30, 512);
+void analyzeAudio(uint16_t&, uint16_t&);
 
-bool whichChannel = false;
+VUMeterMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(30, 512);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))
@@ -59,7 +59,7 @@ void setup()
 #else
 
 //    analogReference(EXTERNAL);
-    analogReference(INTERNAL);
+//    analogReference(INTERNAL);
 
 #endif
 
@@ -72,20 +72,15 @@ void loop()
 {
     if (effect.isReady())
     {
-        uint16_t r = 0;
-        uint16_t l = 0;
-        analyzeAudio(r, l);
-//      effect.autoGain(max(r, l));
-        effect.paint(r, l);
+        effect.paint();
         FastLED.show();
     }
 }
 
 void analyzeAudio(uint16_t &r, uint16_t &l)
 {
-    r = l = 0;
-    uint16_t rMin = -1;
-    uint16_t lMin = -1;
+    uint16_t rMin = -1; // MAX_UINT16_T
+    uint16_t lMin = -1; // MAX_UINT16_T
 
     bool rightChannel = true;
 
