@@ -13,14 +13,14 @@ class VUWaveMatrixLedEffect :  public VUMeterMatrixLedEffect<MATRIX, ledLine, wi
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 public:
 
 	VUWaveMatrixLedEffect(uint16_t Hz, uint16_t noiseLevel = 256, VUMeterMatrixLedPreprocess pre = nullptr);
 	~VUWaveMatrixLedEffect();
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 protected:
 
@@ -34,7 +34,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const VUWaveMatrixLedEffect<MATRIX, ledLine, width, height>::name = "VUWAVE";
+LedEffectName const VUWaveMatrixLedEffect<MATRIX, ledLine, width, height>::name = "VUWAVE";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 VUWaveMatrixLedEffect<MATRIX, ledLine, width, height>::VUWaveMatrixLedEffect(uint16_t Hz, uint16_t noiseLevel, VUMeterMatrixLedPreprocess pre)

@@ -29,13 +29,13 @@ extern uint8_t fht_log_out[FHT_N / 2];  // FHT log output magintude buffer
 #include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include <ZigZagFromTopLeftToBottomAndRight.hpp>
-#include "LEDAudioEffects.h"
+#include <MatrixLineConverters.h>
+#include "LEDAudio.h"
 
 void analyzeAudio(void);
 
 ParabolicXBandConverter<uint8_t, uint8_t> audio(fht_log_out + 2, FHT_N / 2 - 2, MATRIX_W);
-SpectrumMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(256, &audio, analyzeAudio);
+SpectrumMatrixLedEffect<ZigZagFromBottomRightToUpAndLeft, leds, MATRIX_W, MATRIX_H> effect(256, &audio, analyzeAudio);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))

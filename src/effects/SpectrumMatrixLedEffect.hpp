@@ -6,7 +6,6 @@
 #ifndef __SPECTRUMMATRIXLEDEFFECT_HPP__
 #define __SPECTRUMMATRIXLEDEFFECT_HPP__
 
-#include <EffectTimer.hpp>
 #include <ILedEffect.hpp>
 #include <ILedMatrix.hpp>
 #include "converter/ISpectrumBandConverter.h"
@@ -22,7 +21,7 @@ class SpectrumMatrixLedEffect : public MATRIX<ledLine, width, height>, public IL
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 protected:
 
@@ -52,7 +51,7 @@ public:
 	void reset() override;
 	void paint() override;
 
-	operator const char* () const {	return name; }
+	operator LedEffectName () const {	return name; }
 
 private:
 
@@ -62,7 +61,7 @@ private:
 };
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::name = "SPECTRUM";
+LedEffectName const SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::name = "SPECTRUM";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 SpectrumMatrixLedEffect<MATRIX, ledLine, width, height>::SpectrumMatrixLedEffect(uint16_t Hz, ISpectrumBandConverter* audioConverter, SpectrumMatrixLedPreprocess pre)

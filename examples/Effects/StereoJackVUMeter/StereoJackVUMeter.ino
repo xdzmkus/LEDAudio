@@ -20,12 +20,12 @@
 #include <FastLED.h>
 CRGB leds[(MATRIX_H * MATRIX_W)];
 
-#include <ZigZagFromTopLeftToBottomAndRight.hpp>
-#include "LEDAudioEffects.h"
+#include <MatrixLineConverters.h>
+#include "LEDAudio.h"
 
 void analyzeAudio(uint16_t&, uint16_t&);
 
-VUMeterMatrixLedEffect<ZigZagFromTopLeftToBottomAndRight, leds, MATRIX_W, MATRIX_H> effect(30, 512);
+VUMeterMatrixLedEffect<ZigZagFromBottomRightToUpAndLeft, leds, MATRIX_W, MATRIX_H> effect(30, 512);
 
 #define cbi(sfr, bit) (_SFR_BYTE(sfr) &= ~_BV(bit))
 #define sbi(sfr, bit) (_SFR_BYTE(sfr) |= _BV(bit))

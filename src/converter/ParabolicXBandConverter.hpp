@@ -6,7 +6,7 @@
 #ifndef __PARABOLICXBANDCONVERTER_HPP__
 #define __PARABOLICXBANDCONVERTER_HPP__
 
-#include "converter/TAudioConverter.hpp"
+#include "TAudioConverter.hpp"
 
 template <typename SV, typename SN>
 class ParabolicXBandConverter : public TAudioConverter<SV, SN>

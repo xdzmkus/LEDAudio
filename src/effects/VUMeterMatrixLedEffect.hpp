@@ -22,7 +22,7 @@ class VUMeterMatrixLedEffect : public MATRIX<ledLine, width, height>, public ILe
 {
 public:
 
-	static const char* const name;
+	static LedEffectName const name;
 
 protected:
 
@@ -43,7 +43,7 @@ public:
 
 	void paint() override;
 
-	operator const char* () const { return name; }
+	operator LedEffectName () const { return name; }
 
 protected:
 
@@ -64,7 +64,7 @@ private:
 
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
-const char* const VUMeterMatrixLedEffect<MATRIX, ledLine, width, height>::name = "VUMETER";
+LedEffectName const VUMeterMatrixLedEffect<MATRIX, ledLine, width, height>::name = "VUMETER";
 
 template<template <CRGB*, uint8_t, uint8_t> class MATRIX, CRGB* ledLine, uint8_t width, uint8_t height>
 VUMeterMatrixLedEffect<MATRIX, ledLine, width, height>::VUMeterMatrixLedEffect(uint16_t Hz, uint16_t noiseLevel, VUMeterMatrixLedPreprocess pre)

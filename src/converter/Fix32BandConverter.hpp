@@ -6,7 +6,7 @@
 #ifndef __FIX32BANDCONVERTER_HPP__
 #define __FIX32BANDCONVERTER_HPP__
 
-#include "converter/TAudioConverter.hpp"
+#include "TAudioConverter.hpp"
 
 template <typename SV, typename SN>
 class Fix32BandConverter : public TAudioConverter<SV, SN>
